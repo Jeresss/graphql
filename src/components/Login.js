@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import client from '../apolloClient';
 import { gql } from '@apollo/client';
+import './Login.css'; 
+
 
 function Login({ setLoggedIn }) {
   const [username, setUsername] = useState('');
@@ -10,19 +12,14 @@ function Login({ setLoggedIn }) {
     event.preventDefault();
   
     const credentials = btoa(`${username}:${password}`);
-    console.log('Credentials:', credentials);  
-
     const response = await fetch('https://01.gritlab.ax/api/auth/signin', {
       method: 'POST',
       headers: {
         'Authorization': `Basic ${credentials}`
       }
     });
-    console.log('Response:', response); 
-  
-    const data = await response.json();
-    console.log('Data:', data);
-  
+
+    const data = await response.json();  
     if (response.ok) {
       // save the JWT in local storage
       localStorage.setItem('token', data);
@@ -38,30 +35,35 @@ function Login({ setLoggedIn }) {
       });
       const userId = response.data.user.id;
       localStorage.setItem('userId', userId);
-
-      console.log('Token:', data);
-
       // update the loggedIn state
       setLoggedIn(true);
     } else {
-      console.error("imhere", data);
       alert('Wrong username or password, please try again.'); 
-
     }
   };
   
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
+    <form className="login-form" onSubmit={handleSubmit}>
+      <label className="login-label">
         Username/Email:
-        <input type="text" value={username} onChange={e => setUsername(e.target.value)} />
+        <input
+          className="login-input"
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
       </label>
-      <label>
+      <label className="login-label">
         Password:
-        <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
+        <input
+          className="login-input"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
       </label>
-      <input type="submit" value="Submit" />
+      <input className="login-submit" type="submit" value="Submit" />
     </form>
   );
 }
