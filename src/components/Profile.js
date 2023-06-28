@@ -1,8 +1,8 @@
 import React from "react";
 import { gql, useQuery } from '@apollo/client'; 
-import PieChart from './PieChart';
-import HeatmapChart from './HeatmapChart'; 
 import { useEffect, useState } from "react";
+import HeatmapChart from './HeatmapChart'; 
+import AuditRatio from "./AuditRatio";
 import './Profile.css'; 
 
 const GET_USER_DATA = gql`
@@ -107,10 +107,10 @@ const GET_USER_DATA_WITH_TIMELINE = gql`
 `;
 
 
-function Profile() {
+function Profile({ userId, setUserId }) {
   const { loading, error: queryError, data } = useQuery(GET_USER_DATA);
   const [audits, setAudits] = useState(null);
-  const [userId, setUserId] = useState(null);
+  // const [userId, setUserId] = useState(null);
 
   const { loading: auditsLoading, error: auditsError, data: auditsData } = useQuery(GET_AUDITS_BY_USER, {
     variables: { userId: userId },
@@ -133,9 +133,11 @@ function Profile() {
   const totalXP = user.xpAmount.aggregate.sum.amount;
   const downAmount = user.downAmount.aggregate.sum.amount;
   const upAmount = user.upAmount.aggregate.sum.amount;
+  const auditratio = Math.round((upAmount / downAmount) * 100) / 100;
   const age = Math.floor((new Date() - new Date(user.attrs.dateOfBirth).getTime()) / 3.15576e+10);
   const level = user.level && user.level.length > 0 ? user.level[0].amount : "N/A";
-  const heatmapData = XPData.user[0]
+  const heatmapData = XPData.user[0].XPWithDates; // Extract heatmap data
+
 
   console.log('heatmapData: ', heatmapData);
   console.log('upAmount: ', upAmount);
@@ -182,10 +184,15 @@ function Profile() {
          {XPData && XPData.user && XPData.user.length > 0 && XPData.user[0].XPWithDates && (
           <div className="profile-graph">
          <h2>XP Earned Over Time</h2>
-         <HeatmapChart data={heatmapData} />
+         <div id="chart-heatmap">
+           <HeatmapChart data={heatmapData} />
+         </div>
       </div>
       )}
-        <PieChart upAmount={upAmount} downAmount={downAmount} />
+      <div>
+        <h2>Your AuditRatio: {auditratio}</h2>
+        <AuditRatio upAmount={upAmount} downAmount={downAmount} />
+        </div>
       </div>
     </div>
   );

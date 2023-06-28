@@ -24,7 +24,7 @@ function App() {
         {loggedIn ? (
           <>
             <Logout setLoggedIn={setLoggedIn} />
-            <Profile userId={userId} />
+            <Profile userId={userId} setUserId={setUserId} />
           </>
         ) : (
           <Login setLoggedIn={setLoggedIn} />

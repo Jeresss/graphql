@@ -67,3 +67,9 @@
 .profile-bar-graph {
   margin-top: 20px;
 }
+
+.app-container {
+  width: 500px; /* Adjust the width as needed */
+  height: 400px; /* Adjust the height as needed */
+}
+

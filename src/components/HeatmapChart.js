@@ -1,41 +1,38 @@
-import React, { useEffect, useRef } from "react";
-import frappe from "frappe-charts";
+import React, { useEffect, useRef } from 'react';
+import { Chart } from 'frappe-charts';
 
-const HeatmapChart = ({ data }) => {
-  const chartRef = useRef(null);
-  const transactions = data && data.XPWithDates;
-
+function HeatmapChart({ data }) {
+  const chartContainerRef = useRef('#chart-heatmap');
   useEffect(() => {
-    if (chartRef.current && transactions && transactions.length > 0) {
-     /*  const formattedData = transactions.map((transaction) => ({
-        count: transaction.amount,
-        date: new Date(transaction.createdAt).toISOString().slice(0, 10),
-      })); */
-      const formattedData = [
-        { count: 76250, date: '2023-06-02' },
-        { count: 103500, date: '2023-06-08' },
-        { count: 147000, date: '2023-06-04' },
-        { count: 51750, date: '2023-06-09' },
-        // ...
-      ];
-      console.log('chartRef.current: ', chartRef.current);
-      console.log('formattedData: ', formattedData);
+    let mapDataPoints = new Map();
 
-      new frappe.Chart(chartRef.current, {
-        type: "heatmap",
-        title: "XP Earned Over Time",
+    if (data) {
+    data.forEach((item) => {
+      const date = Math.floor(new Date(item.createdAt).getTime() / 1000);
+        mapDataPoints.set(date, item.amount);
+    });
+    const myObject = Object.fromEntries(mapDataPoints);
+   
+      const chart = new Chart(chartContainerRef.current, {
+        title: 'XP Earned Over Time',
         data: {
-          dataPoints: formattedData,
+          dataPoints: myObject,
+          // start: startDate,
+          // end: endDate,
         },
-        countLabel: "XP",
-        colorScale: ["#ebedf0", "#c0ddf9", "#73b3f3", "#3286e1", "#17459e"],
+        type: 'heatmap',
+        height: 250,
+        colors: ['#ebedf0', '#c0ddf9', '#73b3f3', '#3886e1', '#17459e'],
       });
-    } else {
-      console.error("No transaction data available for the heatmap"); 
+  
+      return () => {
+        chart.destroy();
+      };
     }
-  }, [transactions]);
-
-  return <div ref={chartRef}></div>;
-};
+  }, [data]);
+  
+  
+  return <div ref={chartContainerRef}></div>;
+}
 
 export default HeatmapChart;
