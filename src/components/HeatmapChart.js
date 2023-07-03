@@ -12,13 +12,12 @@ function HeatmapChart({ data }) {
         mapDataPoints.set(date, item.amount);
     });
     const myObject = Object.fromEntries(mapDataPoints);
-   
+   console.log('myObject: ', myObject);
       const chart = new Chart(chartContainerRef.current, {
-        title: 'XP Earned Over Time',
+        title: 'Your gained XP amount day by day',
         data: {
           dataPoints: myObject,
-          // start: startDate,
-          // end: endDate,
+           start: new Date('2022-09-01'),
         },
         type: 'heatmap',
         height: 250,
