@@ -110,7 +110,6 @@ const GET_USER_DATA_WITH_TIMELINE = gql`
 function Profile({ userId, setUserId }) {
   const { loading, error: queryError, data } = useQuery(GET_USER_DATA);
   const [audits, setAudits] = useState(null);
-  // const [userId, setUserId] = useState(null);
 
   const { loading: auditsLoading, error: auditsError, data: auditsData } = useQuery(GET_AUDITS_BY_USER, {
     variables: { userId: userId },
@@ -129,7 +128,6 @@ function Profile({ userId, setUserId }) {
   if (queryError || auditsError || timelineError) return <p>Error: {(queryError || auditsError || timelineError).message}</p>;
 
   const user = data.user[0];
-  console.log('user: ', user);
   const totalXP = user.xpAmount.aggregate.sum.amount;
   const downAmount = user.downAmount.aggregate.sum.amount;
   const upAmount = user.upAmount.aggregate.sum.amount;
@@ -138,10 +136,6 @@ function Profile({ userId, setUserId }) {
   const level = user.level && user.level.length > 0 ? user.level[0].amount : "N/A";
   const heatmapData = XPData.user[0].XPWithDates; // Extract heatmap data
 
-
-  console.log('heatmapData: ', heatmapData);
-  console.log('upAmount: ', upAmount);
-  console.log('downAmount: ', downAmount);
 
   if (!userId) {
     setUserId(user.id);

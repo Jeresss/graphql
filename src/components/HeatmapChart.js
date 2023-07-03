@@ -12,7 +12,6 @@ function HeatmapChart({ data }) {
         mapDataPoints.set(date, item.amount);
     });
     const myObject = Object.fromEntries(mapDataPoints);
-   console.log('myObject: ', myObject);
       const chart = new Chart(chartContainerRef.current, {
         title: 'Your gained XP amount day by day',
         data: {
